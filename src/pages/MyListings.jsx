@@ -4,6 +4,8 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
 import StatCard from '../components/StatCard';
 import { platformIcons } from '../assets/assets';
+import CredentialSubmission from '../components/CredentialSubmission';
+import WithdrawModel from '../components/WithdrawModel';
 
 const MyListings = () => {
   const {userListings, balance }= useSelector((state)=>state.listing)
@@ -93,7 +95,7 @@ const MyListings = () => {
           {label: 'Withdrawn', value: balance.withdrawn, icon: ArrowDownCircleIcon},
           {label: 'Available', value: balance.available, icon: CoinsIcon},
         ].map((item, index)=>(
-          <div key={index} className='flex flex-1 items-center justify-between p-4 rounded-lg border border-gray-100 cursor-pointer'>
+          <div onClick={()=>item.label === "Available" && setShowWithdrawal(true)} key={index} className='flex flex-1 items-center justify-between p-4 rounded-lg border border-gray-100 cursor-pointer'>
             <div className='flex items-center gap-3'>
               <item.icon className='text-gray-500 w-6 h-6'/>
               <span className='font-medium text-gray-600'>{item.label}</span>
@@ -136,7 +138,7 @@ const MyListings = () => {
                             <div className='bg-white text-gray-600 text-xs rounded border border-gray-200 p-2 px-3'>
                               {!listing.isCredentialSubmitted && (
                                 <>
-                                <button className='flex items-center gap-2 text-nowrap'>Add Credentials</button>
+                                <button onClick={()=>setShowCredentialSubmission(listing)} className='flex items-center gap-2 text-nowrap'>Add Credentials</button>
                                 <hr className='border-gray-200 my-2' />
                                 </>
                               )}
@@ -213,6 +215,15 @@ const MyListings = () => {
           ))}
         </div>
       )}
+
+      {showCredentialSubmission && (
+        <CredentialSubmission listing={showCredentialSubmission} onClose={()=>setShowCredentialSubmission(null)} />
+      )}
+
+      {showWithdrawal && (
+        <WithdrawModel onClose={()=> setShowWithdrawal(null)} />
+      )}
+
       {/* Footer */}
       <div className='bg-white border-t border-gray-200 p-4 text-center mt-28'>
           <p className='text-sm text-gray-500'>
