@@ -47,7 +47,8 @@ const ManageListing = () => {
   }
 
   const removeImage = (indexToRemove) =>{
-    setFormData(()=>({
+    setFormData((prev) => ({
+      ... prev, images: prev.images.filter((_, i) => i !== indexToRemove)
 
     }))
 }
