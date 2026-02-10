@@ -1,4 +1,5 @@
-import React, { use, useState } from 'react'
+import { Loader2Icon } from 'lucide-react';
+import React, { use, useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom'
@@ -38,8 +39,8 @@ const ManageListing = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
  }
 
- const handleImageUpload = async (event) =>{
-    const files = Array. from(event.target.files);
+ const handleImageUpload = async(event) =>{
+    const files = Array.from(event.target.files);
     if (!files.length) return;
     if(files.length + formData.images.length > 5) return toast.error("You can add up to 5 images")
 
@@ -49,14 +50,50 @@ const ManageListing = () => {
   const removeImage = (indexToRemove) =>{
     setFormData((prev) => ({
       ... prev, images: prev.images.filter((_, i) => i !== indexToRemove)
-
     }))
-}
+  }
 
+  // get listing data for edit if `id` is provided (edit mode)
+  useEffect(()=>{
+    if(!id) return;
+
+    setIsEditing(true)
+    setLoadingListing(true)
+    const listing = userListings.find((listing)=>listing.id === id)
+    if(listing){
+    setFormData(listing)
+    setLoadingListing(false)
+    }else{
+      toast.error("Listing not found")
+      navigate("/my-listings")
+    }
+  },[id])
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+  };
+
+  if(loadingListing){
+    return (
+      <div className='h-screen flex items-center justify-center'>
+        <Loader2Icon className='size-7 animate-spin text-indigo-600' />
+      </div>
+    )
+  }
 
   return (
-    <div>
-      <h1>ManageListing page</h1>
+    <div className='min-h-screen py-8'>
+      <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8'>
+        <div className='mb-8'>
+          <h1 className='text-3xl font-bold text-gray-800'>
+            {isEditing ? "Edit Listing" : "List Your Account"}
+          </h1>
+          <p className='text-gray-600 mt-2'>
+            {isEditing ? "Update your existing account listing." : "Create a mock listing to display your account info"}
+          </p>
+        </div>
+      </div>
     </div>
   )
 }
