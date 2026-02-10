@@ -93,9 +93,65 @@ const ManageListing = () => {
             {isEditing ? "Update your existing account listing." : "Create a mock listing to display your account info"}
           </p>
         </div>
+
+        <form onSubmit={handleSubmit} className='space-y-8'>
+            {/* BASIC INFO */}
+            <Section title='Basic Information'>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                <InputField label='Listing Title *' value={formData.title} placeholder='e.g., Premium Travel Instagram Account' onChange={(v) => handleInputChange('title', v)} required={true} />
+
+                <SelectField label='Platform *' options={platforms} value={formData.platform} onChange={(v) => handleInputChange('platform', v)} required={true} />
+
+                <InputField label='Username/Handle *' value={formData.username} placeholder='@username' onChange={(v) => handleInputChange('username', v)} required={true} />
+
+                <SelectField label='Niche/Category *' options={niches} value={formData.niche} onChange={(v) => handleInputChange('niche', v)} required={true} />
+              </div>
+            </Section>
+
+            {/* METRICS */}
+            <Section title='Account Metrics'>
+              <div className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-6'>
+
+                <InputField label='Followers Count *' type='number' min={0} value={formData.followers_count} placeholder='10000' onChange={(v) =>handleInputChange('followers_count', v)} required={true} />
+
+                <InputField label='Engagement Rate (%)' type='number' min={0} max={100} value={formData.engagement_rate} placeholder='4' onChange={(v) =>handleInputChange('engagement_rate', v)} />
+
+                <InputField label='Monthly Views/Impressions' type='number' min={0} value={formData.monthly_views} placeholder='100000' onChange={(v) =>handleInputChange('monthly_views', v)} />
+
+              </div>
+            </Section>
+        </form>
       </div>
+
     </div>
   )
 }
+
+/* --- Common Elements --- */
+const Section = ({ title, children })=>(
+  <div className='bg-white rounded-lg border border-gray-200 p-6 space-y-6'>
+    <h2 className='text-lg font-semibold text-gray-800'>{title}</h2>
+    {children}
+  </div>
+)
+
+const InputField = ({ label, value, onChange, placeholder, type = 'text', required = false, min = null, max = null })=>(
+  <div>
+    <label className='block text-sm font-medium text-gray-700 mb-2'>{label}</label>
+    <input type={type} min={min} max={max} placeholder={placeholder} value={value} onChange={(e)=>onChange(e.target.value)} className='w-full px-3 py-1.5 text-gray-600 border rounded-md focus: outline-none focus:ring-2 focus:ring-indigo-500 border-gray-300' required={required}/>
+  </div>
+)
+
+const SelectField = ({ label, options, value, onChange, required = false })=>(
+  <div>
+    <label className='block text-sm font-medium text-gray-700 mb-2'>{label}</label>
+    <select value={value} onChange={(e) => onChange(e.target.value)} className='w-full px-3 py-1.5 text-gray-600 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 border-gray-300' required={required}>
+    <option value=''>Select ...</option>
+    {options.map((opt)=>(
+      <option key={opt} value={opt}>{opt}</option>
+    ))}
+  </select>
+</div>
+)
 
 export default ManageListing
